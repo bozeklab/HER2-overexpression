@@ -38,7 +38,7 @@ def train_step(train_loader, model, criterion, optimizer):
 
 def validate_step(val_loader, model, criterion):
     model.eval()
-    val_epoch_loss = 0
+    val_epoch_loss = torch.tensor([0.0]).cuda()
     acc = torch.tensor([0.0]).cuda()
 
     with torch.no_grad():
@@ -54,8 +54,10 @@ def validate_step(val_loader, model, criterion):
 
     if dist.is_nccl_available():
         dist.all_reduce(acc, dist.ReduceOp.SUM)
+        dist.all_reduce(val_epoch_loss, dist.ReduceOp.SUM)
 
     acc /= ( (i+1) * dist.get_world_size() )
+    val_epoch_loss /= dist.get_world_size() 
     val_phase_results = {'Loss': val_epoch_loss, 'Accuracy' : acc.item()} 
     return val_phase_results
 
@@ -106,8 +108,7 @@ def main_worker(proc_index, args):
         transforms.Resize((args.img_size, args.img_size)),
         transforms.ToTensor(),
     ])
-
-
+    
     train_df = pd.read_csv(args.train_csv)
     val_df = pd.read_csv(args.val_csv)
     fn_col = 'filename'
@@ -125,10 +126,9 @@ def main_worker(proc_index, args):
     optimizer = torch.optim.Adam(model.parameters(), lr = args.learning_rate, weight_decay=1e-8)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', factor=args.scheduler_factor, patience=args.scheduler_patience, min_lr=1e-15)
 
+    criterion = CrossEntropyLoss()
+
     epoch0 = 0
-
-    criterion = CrossEntropyLoss()    
-
     epoch = epoch0
     while epoch < epoch0 + args.epochs:
 

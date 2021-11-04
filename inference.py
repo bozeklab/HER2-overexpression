@@ -25,7 +25,6 @@ def get_args():
     parser.add_argument('--img_size', dest='img_size', type=int, default=1024, help='Input image size for the model')
     return parser.parse_args()
 
-
 if __name__ == '__main__':
     args = get_args()
     os.makedirs(args.out_dir, exist_ok = True)
@@ -89,4 +88,4 @@ if __name__ == '__main__':
         + [filenames_series]
 
     dataframe = pd.concat(series_list, axis = 1)
-    dataframe.to_csv(os.path.join(args.out_dir,'inference_out.csv' ), index = False )
+    dataframe.to_csv(os.path.join(args.out_dir,'{}_inference_out.csv'.format(args.task) ), index = False )

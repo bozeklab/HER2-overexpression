@@ -1,11 +1,5 @@
 from torch.utils.data import Dataset
-#import torch
-#import math
 from PIL import Image
-import numpy as np
-#import itertools
-#import os
-import pandas as pd
 
 class ImageDataset(Dataset):
     """Dataset class for a .csv containing paths to images
