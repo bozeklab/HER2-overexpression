@@ -76,7 +76,6 @@ def main_worker(proc_index, args):
             world_size = args.gpus,
             rank = proc_index
         )
-
     else:
         raise RuntimeError('NCCL backend not available!')
 
@@ -96,7 +95,6 @@ def main_worker(proc_index, args):
 
     model = DistributedDataParallel(model, device_ids=[proc_index], output_device=proc_index)
 
-
     train_transform = transforms.Compose([
         transforms.Resize((args.img_size, args.img_size)),
         transforms.RandomHorizontalFlip(),
@@ -108,7 +106,7 @@ def main_worker(proc_index, args):
         transforms.Resize((args.img_size, args.img_size)),
         transforms.ToTensor(),
     ])
-    
+
     train_df = pd.read_csv(args.train_csv)
     val_df = pd.read_csv(args.val_csv)
     fn_col = 'filename'
@@ -150,7 +148,6 @@ def main_worker(proc_index, args):
                 'accuracy': val_phase_results['Accuracy']
 
             }, os.path.join(args.checkpoints_dir,'checkpoint_{}.pth.tar'.format(epoch)))
-        
         epoch += 1
 
 def get_args():
