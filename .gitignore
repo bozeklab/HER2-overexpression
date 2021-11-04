@@ -1,0 +1,10 @@
+/trained_models/*
+**/._DS_Store
+<<<<<<< HEAD
+**/.DS_Store
+=======
+**./.DS_Store
+>>>>>>> fec8e498330622fdf456032fe6ac18f349004ddc
+**/__pycache__
+.vscode
+/old
