@@ -8,11 +8,14 @@ import numpy as np
 import pandas as pd
 
 class ImageDataset(Dataset):
-    """Dataset class for a .csv containing images paths
+    """Dataset class for a .csv containing paths to images
     
     Arguments:
-
-    TBD:
+    df -- dataframe
+    fn_col -- name of column with the filenames
+    lbl_col -- name of column with the class labels
+    transform -- transform to apply
+    return_filename -- if True, __getitem__ also returns the filename of the sample
 
     """
 

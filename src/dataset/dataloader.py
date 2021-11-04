@@ -9,16 +9,6 @@ class DistributedWeightedSampler(Sampler):
     Adapted from https://discuss.pytorch.org/t/how-to-use-my-own-sampler-when-i-already-use-distributedsampler/62143/8
     """
     def __init__(self, weights, replacement=True, shuffle=False, num_replicas=None, rank=None):
-        """
-        if num_replicas is None:
-            if not dist.is_available():
-                raise RuntimeError("Requires distributed package to be available")
-            num_replicas = dist.get_world_size()
-        if rank is None:
-            if not dist.is_available():
-                raise RuntimeError("Requires distributed package to be available")
-            rank = dist.get_rank()
-        """
         self.weights = weights
         self.num_replicas = num_replicas
         self.rank = rank
@@ -46,7 +36,6 @@ class DistributedWeightedSampler(Sampler):
         indices = indices[self.rank:self.total_size:self.num_replicas]
         assert len(indices) == self.num_samples
 
-
         # do the weighted sampling
         subsample_balanced_indices = torch.multinomial(self.weights, self.total_size, self.replacement)
         # subsample the indices
@@ -61,8 +50,6 @@ class DistributedWeightedSampler(Sampler):
         self.epoch = epoch
 
 class PadForUnroll:
-    """ """
-
     def __init__(self, patch_size):
         self.patch_size = patch_size
 
@@ -74,12 +61,3 @@ class PadForUnroll:
             input=x,
             pad=(pad_w//2, pad_w-pad_w//2, pad_h//2, pad_h-pad_h//2), 
             mode='constant', value=1.)
-
-#draft
-"""
-def weighted_distributed_loader(dataset)
-train_dataset = build_image_dataset(config['dataset']['train'], train_transform)
-weights = utils.calculate_weights(torch.tensor(train_dataset.df['HER2_FISH_Score'].values))
-train_sampler = DistributedWeightedSampler(weights, num_replicas=config['gpus'], rank=proc_index)
-train_loader = DataLoader(train_dataset, batch_size=1, shuffle=False, num_workers=4, pin_memory=True, sampler=train_sampler)
-"""

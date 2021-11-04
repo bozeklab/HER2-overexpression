@@ -8,3 +8,10 @@
 **/__pycache__
 .vscode
 /old
+/checkpoints
+/out
+/test.csv
+/train.csv
+/val.csv
+/train_csv_full.csv
+/val_csv_full.csv
