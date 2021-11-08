@@ -50,7 +50,7 @@ def validate_step(val_loader, model, criterion):
             loss = criterion(output, target)
             val_epoch_loss += loss.item()
             predicted_classes = torch.max(output, dim = 1)[1]
-            acc += (predicted_classes == target).sum()            
+            acc += (predicted_classes == target).sum()
 
     if dist.is_nccl_available():
         dist.all_reduce(acc, dist.ReduceOp.SUM)
@@ -102,24 +102,23 @@ def main_worker(proc_index, args):
         transforms.ToTensor(),
     ])
 
-    val_transform = transforms.Compose([
-        transforms.Resize((args.img_size, args.img_size)),
-        transforms.ToTensor(),
-    ])
-
     train_df = pd.read_csv(args.train_csv)
-    val_df = pd.read_csv(args.val_csv)
-    fn_col = 'filename'
-    train_dataset = ImageDataset(train_df, fn_col = fn_col, lbl_col = args.task, transform = train_transform)
+    train_dataset = ImageDataset(train_df, fn_col = 'filename', lbl_col = args.task, transform = train_transform)
     if args.weighted_sampler_label == 'None':
         weighted_sampler_label = args.task
     weights = calculate_weights(torch.tensor(train_df[weighted_sampler_label].values))
     train_sampler = DistributedWeightedSampler(weights, num_replicas=args.gpus, rank=proc_index, shuffle=True)
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, num_workers=args.num_workers, pin_memory=True, sampler=train_sampler)
 
-    val_dataset = ImageDataset(val_df, fn_col = fn_col, lbl_col = args.task, transform = val_transform)
-    val_sampler = DistributedSampler(val_dataset, num_replicas=args.gpus, rank=proc_index, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=args.batch_size, num_workers=args.num_workers, pin_memory=True, sampler=val_sampler)
+    if args.val_csv != 'None':
+        val_transform = transforms.Compose([
+            transforms.Resize((args.img_size, args.img_size)),
+            transforms.ToTensor(),
+        ])
+        val_df = pd.read_csv(args.val_csv)
+        val_dataset = ImageDataset(val_df, fn_col = 'filename', lbl_col = args.task, transform = val_transform)
+        val_sampler = DistributedSampler(val_dataset, num_replicas=args.gpus, rank=proc_index, shuffle=True)
+        val_loader = DataLoader(val_dataset, batch_size=args.batch_size, num_workers=args.num_workers, pin_memory=True, sampler=val_sampler)
     
     optimizer = torch.optim.Adam(model.parameters(), lr = args.learning_rate, weight_decay=1e-8)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', factor=args.scheduler_factor, patience=args.scheduler_patience, min_lr=1e-15)
@@ -131,9 +130,11 @@ def main_worker(proc_index, args):
     while epoch < epoch0 + args.epochs:
 
         train_phase_results = train_step(train_loader, model, criterion, optimizer)
-        val_phase_results = validate_step(val_loader, model, criterion)
-        acc = val_phase_results['Accuracy']
-        scheduler.step(acc)
+        val_phase_results = {'Loss': '', 'Accuracy' : ''} 
+        if args.val_csv != 'None':
+            val_phase_results = validate_step(val_loader, model, criterion)
+            acc = val_phase_results['Accuracy']
+            scheduler.step(acc)
 
         if (proc_index == 0): 
             print('Epoch {} finished.'.format(epoch))
@@ -163,7 +164,7 @@ def get_args():
     parser.add_argument('--scheduler_patience', dest="scheduler_patience", type=int, nargs='?', default=10, help='Scheduler patience for decreasing learning rate')
     parser.add_argument('--batch_size', type=int, nargs='?', default=32, help='Batch size', dest='batch_size')
     parser.add_argument('--train_csv', dest='train_csv', type=str, default='train.csv', help='.csv file containing the training examples')
-    parser.add_argument('--val_csv', dest='val_csv', type=str, default='val.csv', help='.csv file containing the val examples')
+    parser.add_argument('--val_csv', dest='val_csv', type=str, default='None', help='.csv file containing the val examples')
     parser.add_argument('--checkpoints_dir', dest='checkpoints_dir', type=str, default='./checkpoints', help='Path to save model checkpoints')
     parser.add_argument('--ip_address', dest='master_addr', type=str, default='localhost', help='IP address of rank 0 node')
     parser.add_argument('--port', dest='master_port', type=str, default='8888', help='Free port on rank 0 node')

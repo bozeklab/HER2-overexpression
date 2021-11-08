@@ -30,7 +30,7 @@ Each dataset should be in a .csv file with the following columns:
                         Batch size (default: 32).  
   --train_csv TRAIN_CSV
                         .csv file containing the training examples (default: train.csv).  
-  --val_csv VAL_CSV     .csv file containing the val examples (default: val.csv).  
+  --val_csv VAL_CSV     .csv file containing the val examples (default: None).  
   --checkpoints_dir CHECKPOINTS_DIR
                         Path to save model checkpoints (default: ./checkpoints).  
   --ip_address MASTER_ADDR

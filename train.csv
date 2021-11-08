@@ -1,0 +1,17 @@
+ihc-score,her2-status,filename,weighted_sampler_label
+3,1,./data/example_images/3_a1f1510c-b91e-4995-ba59-596ca7ebb019.jpg,4
+3,1,./data/example_images/3_99b35026-3833-48c0-9b30-dcd151596f6d.jpg,4
+3,1,./data/example_images/3_b43f63ad-6303-4022-a1ed-92915a107106.jpg,4
+2,1,./data/example_images/2_a5593c5e-5c9c-4499-bfab-3aebe3ef4b7f.jpg,3
+2,1,./data/example_images/2_0123a214-85b7-4804-86db-474b05a4ae57.jpg,3
+2,1,./data/example_images/2_da5928b4-e9a0-4922-8f20-81cb304d0d97.jpg,3
+2,0,./data/example_images/2_726fa489-3deb-4d06-ae5c-8f20bd3f3025.jpg,2
+2,0,./data/example_images/2_aeb277c9-d925-4660-bb22-b8f850603d54.jpg,2
+2,0,./data/example_images/2_ac717549-389b-4a2b-a4c5-c101220b1e0c.jpg,2
+1,0,./data/example_images/1_fb95908d-1b06-4e32-b422-134b23154c8a.jpg,1
+1,0,./data/example_images/1_f8a2cea0-aaed-4995-ae30-d9de475d3821.jpg,1
+1,0,./data/example_images/1_154ae963-bd2a-4a12-8fa9-815ba13922ae.jpg,1
+0,0,./data/example_images/0_ccb66c10-0990-4da2-881e-b14b0a059e2a.jpg,0
+0,0,./data/example_images/0_9b0f64d1-6785-49d9-b279-004b2deb8478.jpg,0
+0,0,./data/example_images/0_aa1da043-3ec9-4ad1-9ccc-3e25d3b5cfaf.jpg,0
+0,0,./data/example_images/0_a6d0d6a6-4dc6-4368-9d69-8ded066cf60e.jpg,0

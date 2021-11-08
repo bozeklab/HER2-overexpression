@@ -11,8 +11,8 @@
 /checkpoints
 /out
 /test.csv
-/train.csv
 /val.csv
 /train_csv_full.csv
 /val_csv_full.csv
 /requirements_pip.txt
+/copy_data.py
