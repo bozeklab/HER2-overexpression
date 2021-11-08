@@ -10,6 +10,12 @@ $ conda env create --file environment.yml
 $ conda activate her2
 $ python3 train.py
 ```
+
+Similarly, to train the MIL classifier:
+```console
+$ python3 train.py --model=abmil --batch_size=1 --img_size=5468
+```
+
 See the information below on how to correctly use the available scripts.
 
 ### Data format

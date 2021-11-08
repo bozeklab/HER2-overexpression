@@ -1,6 +1,5 @@
 ihc-score,her2-status,filename,weighted_sampler_label
 3,1,./data/example_images/3_a1f1510c-b91e-4995-ba59-596ca7ebb019.jpg,4
-3,1,./data/example_images/3_99b35026-3833-48c0-9b30-dcd151596f6d.jpg,4
 3,1,./data/example_images/3_b43f63ad-6303-4022-a1ed-92915a107106.jpg,4
 2,1,./data/example_images/2_a5593c5e-5c9c-4499-bfab-3aebe3ef4b7f.jpg,3
 2,1,./data/example_images/2_0123a214-85b7-4804-86db-474b05a4ae57.jpg,3

@@ -1,0 +1,7 @@
+**/._DS_Store
+**/.DS_Store
+**/__pycache__
+.vscode
+/test.csv
+/val.csv
+/copy_data.py
