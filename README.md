@@ -20,7 +20,7 @@ $ python3 train.py --model=abmil --batch_size=1 --img_size=5468
 See the information below on how to correctly use the available scripts.
 
 ### Training with Google Colab
- **train.py** makes use of **CUDA** to accelerate the training of the model. In case CUDA is not available to you, we provide **train_notebook.ipynb** that can be open with [**Google Colab**](https://colab.research.google.com/)
+ **train.py** makes use of **CUDA** to accelerate the training of the model. In case CUDA is not available to you, we provide **train_notebook.ipynb** that can be opened with [**Google Colab**](https://colab.research.google.com/)
 
 ### Data format
 Each dataset should be in a .csv file with the following columns:
