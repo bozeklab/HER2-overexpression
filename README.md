@@ -4,6 +4,7 @@ Prediction of HER2 overexpression status and IHC score as seen in "Predicting th
 
 ## Usage:  
 
+### Quick intro
 To train a resnet on example images available in _data/example_images_ run:  
 ```console
 $ conda env create --file environment.yml
@@ -18,8 +19,10 @@ $ python3 train.py --model=abmil --batch_size=1 --img_size=5468
 
 See the information below on how to correctly use the available scripts.
 
-### Data format
+### Training with Google Colab
+ **train.py** makes use of **CUDA** to accelerate the training of the model. In case CUDA is not available to you, we provide **train_notebook.ipynb** that can be open with [**Google Colab**](https://colab.research.google.com/)
 
+### Data format
 Each dataset should be in a .csv file with the following columns:
 - **filename**: paths of the images. 
 - **ihc-score**: Numeric labels of the IHC score (0..3)
