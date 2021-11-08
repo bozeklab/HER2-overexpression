@@ -30,7 +30,7 @@ def get_args():
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--task', dest='task', type=str, default='her2-status', help='ihc-score or her2-status')
     parser.add_argument('--train_csv', dest='train_csv', type=str, default='train.csv', help='.csv file containing the training examples')
-    parser.add_argument('--test_csv', dest='test_csv', type=str, default='test.csv', help='.csv file containing the test examples')
+    parser.add_argument('--test_csv', dest='test_csv', type=str, default='None', help='.csv file containing the test examples')
     parser.add_argument('--pickle_dir', dest='pickle_dir', type=str, default='./', help='Folder to store the pickled classifier')
     parser.add_argument('--out_dir', dest='out_dir', type=str, default='./out', help='Path to save the inference results')
     return parser.parse_args()
@@ -47,14 +47,15 @@ if __name__ == '__main__':
     clf = LogisticRegression(max_iter = 200, class_weight = 'balanced').fit(x_train, targets)
     pickle.dump(clf, open(os.path.join(args.pickle_dir, '{}_staining_intensity_classifier.pkl'.format(args.task)), 'wb'))
 
-    test_df = pd.read_csv(args.test_csv)
-    x_test = test_df.apply(lambda x: extract_max_avg_staining_intensity(x['filename']), axis = 1).values.reshape(-1,1)
+    if args.test_csv != 'None':
+        test_df = pd.read_csv(args.test_csv)
+        x_test = test_df.apply(lambda x: extract_max_avg_staining_intensity(x['filename']), axis = 1).values.reshape(-1,1)
 
-    predictions = clf.predict(x_test)
-    results_df = pd.concat([
-        test_df['filename'], 
-        test_df[args.task].rename('true_class'), 
-        pd.Series(data = predictions, name = 'predicted_class')
-        ], axis = 1)
+        predictions = clf.predict(x_test)
+        results_df = pd.concat([
+            test_df['filename'], 
+            test_df[args.task].rename('true_class'), 
+            pd.Series(data = predictions, name = 'predicted_class')
+            ], axis = 1)
 
-    results_df.to_csv(os.path.join(args.out_dir,'{}_staining_intensity_inference_out.csv'.format(args.task)), index = False)
+        results_df.to_csv(os.path.join(args.out_dir,'{}_staining_intensity_inference_out.csv'.format(args.task)), index = False)

@@ -4,6 +4,14 @@ Prediction of HER2 overexpression status and IHC score as seen in "Predicting th
 
 ## Usage:  
 
+To train a resnet on example images available in _data/example_images_ run:  
+```console
+$ conda env create --file environment.yml
+$ conda activate her2
+$ python3 train.py
+```
+See the information below on how to correctly use the available scripts.
+
 ### Data format
 
 Each dataset should be in a .csv file with the following columns:
@@ -57,7 +65,7 @@ Each dataset should be in a .csv file with the following columns:
   --task TASK           ihc-score or her2-status (default: her2-status).  
   --train_csv TRAIN_CSV
                         .csv file containing the training examples (default: train.csv).  
-  --test_csv TEST_CSV   .csv file containing the test examples (default: test.csv).  
+  --test_csv TEST_CSV   .csv file containing the test examples (default: None).  
   --pickle_dir PICKLE_DIR
                         Folder to store the pickled classifier (default: ./).  
   --out_dir OUT_DIR     Path to save the inference results (default: ./out).  
