@@ -31,8 +31,7 @@ if __name__ == '__main__':
 
     torch.manual_seed(0)
 
-    if not torch.cuda.is_available():
-        raise RuntimeError('CUDA not available!')
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     if args.task == 'ihc-score':
         args.num_classes = 4
@@ -42,9 +41,9 @@ if __name__ == '__main__':
         raise ValueError('Task should be ihc-score or her-status')
 
     if args.model == 'resnet34':
-        model = resnet34(pretrained = False, num_classes = args.num_classes).cuda()
+        model = resnet34(pretrained = False, num_classes = args.num_classes).to(device)
     elif args.model == 'abmil':
-        model = ResnetABMIL(num_classes = args.num_classes).cuda()
+        model = ResnetABMIL(num_classes = args.num_classes).to(device)
     else:
         raise ValueError('Model should be resnet34 or abmil')  
 
@@ -68,7 +67,7 @@ if __name__ == '__main__':
     with torch.no_grad():
         for i, batch in enumerate(test_loader):
             img_tensor, target, fn = batch
-            img_tensor, target = img_tensor.cuda(), target.cuda()
+            img_tensor, target = img_tensor.to(device), target.to(device)
             output = model(img_tensor)
             if isinstance(output, (tuple, list)):
                 output = output[0]
