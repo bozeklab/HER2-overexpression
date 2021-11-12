@@ -55,26 +55,20 @@ class ResnetABMIL(nn.Module):
         #resnet34 last layer vectors have 512 features, 128 is chosen as hidden size for the attention mechanism
         self.attention_mechanism = GatedAttention(512, hidden_size)
         #if pretrained = True the classifier is also going to be pretrained, and it only works for num_classes = 1000 (imagenet)
-        #self.classifier = resnet_modules[-1]#torch.nn.Linear(512, num_classes)
         self.classifier = nn.Linear(512, kwargs.get('num_classes'))
     
-    #esto lo sacaria afuera capaz
     def get_valid_patches(self, x):
         rand_offset = True if self.training else False
         x, valid_ind = utils.get_valid_patches(x, self.patch_size, self.patch_size, rand_offset = rand_offset)
         return x, valid_ind
     
     def forward(self, x):
-        #recuerdo que este modelo usa batch_size = 1
+        #model only allows batch size = 1
         if x.shape[0] != 1:
             raise ValueError('Model only admits batch size = 1!')
 
         x = x.squeeze(0)
         x, valid_ind = self.get_valid_patches(x)
-        #esto era para randomizar los indices pero creo que no tiene sentido
-        #num_tiles = img_tensor.shape[0]
-        #random_tiles_indices = torch.randperm(num_tiles)
-        #img_tensor = img_tensor[random_tiles_indices]
         x = self.feature_extractor(x)
         x, A = self.attention_mechanism(x)
         pred = self.classifier(x)

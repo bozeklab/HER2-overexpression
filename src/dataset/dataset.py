@@ -10,7 +10,6 @@ class ImageDataset(Dataset):
     lbl_col -- name of column with the class labels
     transform -- transform to apply
     return_filename -- if True, __getitem__ also returns the filename of the sample
-
     """
 
     def __init__(self, df, fn_col = None, lbl_col = None, transform = None, return_filename = False):
