@@ -52,7 +52,7 @@ class ResnetABMIL(nn.Module):
         resnet_modules = list(resnet.children())
         self.patch_size = patch_size
         self.feature_extractor = nn.Sequential(*resnet_modules[:-1])
-        #resnet34 last layer vectors have 512 features, 128 is chosen as hidden size for the attention mechanism
+        #resnet34 last layer vectors have 512 features
         self.attention_mechanism = GatedAttention(512, hidden_size)
         #if pretrained = True the classifier is also going to be pretrained, and it only works for num_classes = 1000 (imagenet)
         self.classifier = nn.Linear(512, kwargs.get('num_classes'))
