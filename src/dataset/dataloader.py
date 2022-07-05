@@ -18,34 +18,21 @@ class DistributedWeightedSampler(Sampler):
         self.replacement = replacement
         self.shuffle = shuffle
 
-
     def __iter__(self):
-        # deterministically shuffle based on epoch
+        # g is always created with the same seed
         g = torch.Generator()
-        g.manual_seed(self.epoch)
+        # deterministically shuffle based on epoch (to make torch.multinomial yield different indices)
         if self.shuffle:
-            indices = torch.randperm(self.weights.size()[0], generator=g).tolist()
-        else:
-            indices = list(range(self.weights.size()[0]))
-
-        # add extra samples to make it evenly divisible
-        indices += indices[:(self.total_size - len(indices))]
-        assert len(indices) == self.total_size
-
-        # subsample
-        indices = indices[self.rank:self.total_size:self.num_replicas]
-        assert len(indices) == self.num_samples
-
+              g.manual_seed(self.epoch)
         # do the weighted sampling
-        subsample_balanced_indices = torch.multinomial(self.weights, self.total_size, self.replacement)
-        # subsample the indices
-        subsample_balanced_indices = subsample_balanced_indices[indices]
-
+        subsample_balanced_indices = torch.multinomial(self.weights, self.total_size, self.replacement, generator=g)
+        # subsample the indices according to rank
+        subsample_balanced_indices = subsample_balanced_indices[self.rank:self.total_size:self.num_replicas]
         return iter(subsample_balanced_indices.tolist())
 
     def __len__(self):
         return self.num_samples
-
+    
     def set_epoch(self, epoch):
         self.epoch = epoch
 
