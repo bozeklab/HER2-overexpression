@@ -64,6 +64,7 @@ def validate_step(val_loader, model, criterion):
 def main_worker(proc_index, args):
 
     torch.manual_seed(0)
+    torch.cuda.manual_seed_all(0)
 
     if torch.cuda.is_available():
         torch.cuda.set_device(proc_index)
